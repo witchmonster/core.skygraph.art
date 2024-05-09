@@ -15,7 +15,7 @@ unwind nodepool as from
 with nodepool, nodes, from
 call {
     with from, nodepool
-    match (from)-[r:(IS_PARENT_wFILAMENT|IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
+    match (from)-[r:(IS_PARENT_FILAMENT|IS_PARENT_GIGACLUSTER|IS_PARENT_SUPERCLUSTER|IS_PARENT_CLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
     where from <> to
         and to in nodepool
     with from, to, collect(distinct r) as rels
