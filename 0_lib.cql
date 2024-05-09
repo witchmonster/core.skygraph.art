@@ -62,8 +62,10 @@ return file as filename, time, rows, done',
 'read',
 'Calculates relationship weights between all pairs of nodes that have any and writes them to a file.
 
-1) assigns global weights to likes, replies, follows
-2) for each interaction, multiply by personal significance ratio: (1 - from.replies/from.interactions) and take a logarithm on count
+1) assigns global weights* to likes, replies, follows
+2) for each interaction, multiply by personal significance ratio*: (1 - from.replies/from.interactions) and take a logarithm on count
 3) take a sum of all weighted logarithmic interations
+
+* https://www.researchgate.net/publication/283025686_Using_the_interaction_on_social_networks_to_predict_real_life_friendship
 
 ');
