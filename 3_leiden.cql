@@ -92,8 +92,6 @@
 
 // ---------------- mode: STRONG (FLR->WSLOGSUM->MOOTHAVG->UDMAX) -------------------
 
-// Run both algos 1) and 2) for dual underlay graph. additionally, run 3) for detail overlay
-
 // -------------------- Filaments --------------------
 
 call gds.graph.drop('undirected_filament', false);
