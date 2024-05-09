@@ -41,21 +41,21 @@ set m.communityNameGalaxy = 'web3';
 
 match (n:Account {handle: 'jaz.bsky.social'})
 match (m:Account {community_galaxy: n.community_galaxy})
-set m.communityNameGalaxy = 'jaz-harmonic';
+set m.communityNameGalaxy = 'jaz-galaxy';
 
 //--------- test nebulas ------------
 match (n:Account {handle: 'jaz.bsky.social'})
 match (m:Account {community_nebula: n.community_nebula})
-set m.communityNameNebula = 'jaz-detailed';
+set m.communityNameNebula = 'jaz-nebula';
 
 match (n:Account {handle: 'pfrazee.com'})
 match (m:Account {community_nebula: n.community_nebula})
-set m.communityNameNebula = 'pfrazee-detailed';
+set m.communityNameNebula = 'pfrazee-nebula';
 
 match (n:Account {handle: 'retr0.id'})
 match (m:Account {community_nebula: n.community_nebula})
-set m.communityNameNebula = 'retroid-detailed';
+set m.communityNameNebula = 'retroid-nebula';
 
 match (n:Account {handle: 'why.bsky.team'})
 match (m:Account {community_nebula: n.community_nebula})
-set m.communityNameNebula = 'why-detailed';
+set m.communityNameNebula = 'why-nebula';
