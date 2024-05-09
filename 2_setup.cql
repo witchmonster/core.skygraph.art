@@ -25,3 +25,8 @@ return count(from);
 match (n:Account)
 where n.weight is null
 set n.weight = 0;
+
+CALL apoc.load.csv('optout.csv') YIELD list
+unwind list as item
+match (node:Account {did: item})
+set node.optOut = true;
