@@ -2,7 +2,7 @@
 // match (n:Galaxy) delete n;
 
 match (n) where n.community_galaxy is not null
-and n.interactions>=500
+// and n.interactions>=500
 with n.community_galaxy as c,
     count(n) as size
 where size >= 10

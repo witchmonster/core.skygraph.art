@@ -24,7 +24,7 @@ with
 with *
 call { with community match (n:Account)
 where n.community_cluster=community
-return n.handle as leader, n.community_superstrongcluster as leaderParent
+return n.handle as leader, n.community_supercluster as leaderParent
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)

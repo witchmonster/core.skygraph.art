@@ -1,4 +1,4 @@
-// -------------------- Gigaclusters to weak Filaments --------------------
+// -------------------- Gigaclusters --------------------
 
 :auto
 match (c:Gigacluster)
@@ -15,7 +15,7 @@ call {
   with filament, count(m) as accountsInParent, c
   with *, round(toFloat(accountsInParent*100)/c.size,6) as portion
   match (child:Gigacluster {community:c.community}), (parent:Filament{community:filament})
-  merge (child)-[g:IS_PARENT_wFILAMENT {accountsIn:accountsInParent, portion:portion}]->(parent)
+  merge (child)-[g:IS_PARENT_FILAMENT {accountsIn:accountsInParent, portion:portion}]->(parent)
 } in transactions
 return *;
 
@@ -32,10 +32,10 @@ return r.portion as portion, p.community as topParent, p.leader as parentLeader
 with c, portion, topParent
 set c.topParent=topParent, c.topParentPortion=portion
 
-// -------------------- Gigaclusters to weak Filaments --------------------
+// -------------------- Gigaclusters --------------------
 
 
-// -------------------- Strong Superclusters --------------------
+// -------------------- Superclusters --------------------
 
 // set parents (1 minute)
 :auto
@@ -53,7 +53,7 @@ call {
   with gigacluster, count(m) as accountsInParent, c
   with *, round(toFloat(accountsInParent*100)/c.size,6) as portion
   match (child:Supercluster {community:c.community}), (parent:Gigacluster{community:gigacluster})
-  merge (child)-[g:IS_PARENT_gigacluster {accountsIn:accountsInParent, portion:portion}]->(parent)
+  merge (child)-[g:IS_PARENT_GIGACLUSTER {accountsIn:accountsInParent, portion:portion}]->(parent)
 } in transactions
 return *;
 
@@ -70,121 +70,7 @@ return r.portion as portion, p.community as topParent, p.leader as parentLeader
 with c, portion, topParent
 set c.topParent=topParent, c.topParentPortion=portion
 
-// -------------------- Strong Superclusters --------------------
-
-// -------------------- Strong Clusters --------------------
-
-// set parents (1 minute)
-:auto
-match (c:Cluster)
-call {
-  with c
-  match (n:Account)
-  where n.community_cluster=c.community
-  with n, c
-  order by n.weight desc
-  with n, c
-  with distinct n.community_supercluster as supercluster, c
-  match (m:Account) where m.community_supercluster = supercluster
-  and m.community_cluster = c.community
-  with supercluster, count(m) as accountsInParent, c
-  with *, round(toFloat(accountsInParent*100)/c.size,6) as portion
-  match (child:Cluster {community:c.community}), (parent:Supercluster{community:supercluster})
-  merge (child)-[g:IS_PARENT_supercluster {accountsIn:accountsInParent, portion:portion}]->(parent)
-} in transactions
-return *;
-
-// set topParent data
-match (c:Cluster)
-call {
-with c
-match (c)-[r]-(p:Supercluster)
-with p, r
-order by r.portion desc
-limit 1
-return r.portion as portion, p.community as topParent, p.leader as parentLeader
-}
-with c, portion, topParent
-set c.topParent=topParent, c.topParentPortion=portion
-
-// -------------------- Strong Clusters --------------------
-
-// -------------------- Galaxies to Strong Clusters --------------------
-
-// set parents (12-15 min)
-:auto
-match (c:Galaxy)
-call {
-  with c
-  match (n:Account)
-  where n.community_galaxy=c.community
-  with n, c
-  order by n.weight desc
-  with n, c
-  with distinct n.community_cluster as cluster, c
-  match (m:Account) where m.community_cluster = cluster
-  and m.community_galaxy = c.community
-  with cluster, count(m) as accountsInParent, c
-  with *, round(toFloat(accountsInParent*100)/c.size,6) as portion
-  match (child:Galaxy {community:c.community}), (parent:Cluster{community:cluster})
-  merge (child)-[g:IS_PARENT_cluster {accountsIn:accountsInParent, portion:portion}]->(parent)
-} in transactions
-return *;
-
-// set topParent data
-match (c:Galaxy)
-call {
-with c
-match (c)-[r]-(p:Cluster)
-with p, r
-order by r.portion desc
-limit 1
-return r.portion as portion, p.community as topParent, p.leader as parentLeader
-}
-with c, portion, topParent
-set c.topParent=topParent, c.topParentPortion=portion;
-
-// -------------------- Galaxies to Strong Clusters --------------------
-
-
 // -------------------- Superclusters --------------------
-
-// set parents (1 minute)
-:auto
-match (c:Supercluster)
-call {
-  with c
-  match (n:Account)
-  where n.community_supercluster=c.community
-  with n, c
-  order by n.weight desc
-  with n, c
-  with distinct n.community_filament as filament, c
-  match (m:Account) where m.community_filament = filament
-  and m.community_supercluster = c.community
-  with filament, count(m) as accountsInParent, c
-  with *, round(toFloat(accountsInParent*100)/c.size,6) as portion
-  match (child:Supercluster {community:c.community}), (parent:Filament{community:filament})
-  merge (child)-[g:IS_PARENT_FILAMENT {accountsIn:accountsInParent, portion:portion}]->(parent)
-} in transactions
-return *;
-
-// set topParent data
-match (c:Supercluster)
-call {
-with c
-match (c)-[r]-(p:Filament)
-with p, r
-order by r.portion desc
-limit 1
-return r.portion as portion, p.community as topParent, p.leader as parentLeader
-}
-with c, portion, topParent
-set c.topParent=topParent, c.topParentPortion=portion
-
-// -------------------- Superclusters --------------------
-
-
 
 // -------------------- Clusters --------------------
 

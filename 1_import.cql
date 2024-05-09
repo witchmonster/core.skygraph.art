@@ -5,8 +5,6 @@
 
 //add indexes
 
-//reminder to rename properties community_xxxx with the next re-import
-
 CREATE CONSTRAINT account_unique IF NOT EXISTS
 FOR (n:Account)
 REQUIRE n.did IS UNIQUE;
@@ -41,11 +39,15 @@ CREATE CONSTRAINT is_parent_filament IF NOT EXISTS
 FOR ()-[r:IS_PARENT_FILAMENT]->()
 REQUIRE (r.start, r.end) IS RELATIONSHIP UNIQUE;
 
+CREATE CONSTRAINT IS_PARENT_GIGACLUSTER IF NOT EXISTS
+FOR ()-[r:IS_PARENT_GIGACLUSTER]->()
+REQUIRE (r.start, r.end) IS RELATIONSHIP UNIQUE;
+
 CREATE CONSTRAINT is_parent_supercluster IF NOT EXISTS
 FOR ()-[r:IS_PARENT_SUPERCLUSTER]->()
 REQUIRE (r.start, r.end) IS RELATIONSHIP UNIQUE;
 
-CREATE CONSTRAINT is_parent_cluster IF NOT EXISTS
+CREATE CONSTRAINT IS_PARENT_CLUSTER IF NOT EXISTS
 FOR ()-[r:IS_PARENT_CLUSTER]->()
 REQUIRE (r.start, r.end) IS RELATIONSHIP UNIQUE;
 
@@ -58,9 +60,9 @@ FOR ()-[r:IS_PARENT_NEBULA]->()
 REQUIRE (r.start, r.end) IS RELATIONSHIP UNIQUE;
 
 CREATE INDEX rel_index_is_parent_filament IF NOT EXISTS FOR ()-[r:IS_PARENT_FILAMENT]->() ON (r.portion);
-CREATE INDEX rel_index_is_parent_gigacluster IF NOT EXISTS FOR ()-[r:IS_PARENT_GIGACLUSTER]->() ON (r.portion);
+CREATE INDEX rel_index_IS_PARENT_GIGACLUSTER IF NOT EXISTS FOR ()-[r:IS_PARENT_GIGACLUSTER]->() ON (r.portion);
 CREATE INDEX rel_index_is_parent_supercluster IF NOT EXISTS FOR ()-[r:IS_PARENT_SUPERCLUSTER]->() ON (r.portion);
-CREATE INDEX rel_index_is_parent_cluster IF NOT EXISTS FOR ()-[r:IS_PARENT_CLUSTER]->() ON (r.portion);
+CREATE INDEX rel_index_IS_PARENT_CLUSTER IF NOT EXISTS FOR ()-[r:IS_PARENT_CLUSTER]->() ON (r.portion);
 CREATE INDEX rel_index_is_parent_galaxy IF NOT EXISTS FOR ()-[r:IS_PARENT_GALAXY]->() ON (r.portion);
 CREATE INDEX rel_index_is_parent_nebula IF NOT EXISTS FOR ()-[r:IS_PARENT_NEBULA]->() ON (r.portion);
 
@@ -75,7 +77,6 @@ create index replies IF NOT EXISTS for (n:Account) on (n.replies);
 create index likes IF NOT EXISTS for (n:Account) on (n.likes);
 create index follows IF NOT EXISTS for (n:Account) on (n.follows);
 create index community IF NOT EXISTS for (n:Account) on (n.community);
-
 
 create index communityNameFilament IF NOT EXISTS for (n:Account) on (n.communityNameFilament);
 create index communityNameGigacluster IF NOT EXISTS for (n:Account) on (n.communityNameGigacluster);
