@@ -2,7 +2,7 @@
 
 // ----------------------- Gigaclusters -----------------------
 with "
-match (n:sFilament)
+match (n:Gigacluster)
 where n.size >=100
 with n
 order by n.size desc
@@ -26,7 +26,7 @@ yield file, rows, time, done
 return file, rows, time, done;
 
 :auto
-match (n:sFilament)
+match (n:Gigacluster)
 // where n.community=89
 where n.size >= 100
 with n

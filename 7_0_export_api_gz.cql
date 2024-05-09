@@ -1,10 +1,10 @@
 :auto
 with "
-match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament|Filament) where n.community is not null
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament) where n.community is not null
 with n
 with collect(n) as nodepool, collect({did: n.did, handle: n.name, cType: labels(n)[0], community: case
         when n:Filament then 'wf'
-        when n:sFilament then 'f'
+        when n:Gigacluster then 'f'
         when n:Supercluster then 's'
         when n:Cluster then 'c'
         when n:Galaxy then 'g'
@@ -15,7 +15,7 @@ unwind nodepool as from
 with nodepool, nodes, from
 call {
     with from, nodepool
-    match (from)-[r:(IS_PARENT_wFILAMENT|IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament|Filament)
+    match (from)-[r:(IS_PARENT_wFILAMENT|IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
     where from <> to
         and to in nodepool
     with from, to, collect(distinct r) as rels
@@ -41,7 +41,7 @@ return file, rows, time, done;
 
 :auto
 with "
-    match (c:sFilament|Supercluster|Cluster|Galaxy|Nebula|Constellation)
+    match (c:Gigacluster|Supercluster|Cluster|Galaxy|Nebula|Constellation)
     with c
     order by c.name
     with collect({name: c.name, community:
@@ -57,7 +57,7 @@ return file, rows, time, done;
 //communities to users
 :auto
 with "
-match (f:sFilament)
+match (f:Gigacluster)
 call {
         with f
         match (a:Account {community_gigacluster:f.community})

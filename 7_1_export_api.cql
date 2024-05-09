@@ -1,7 +1,7 @@
-match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament|Filament)
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
 set n.propertyName = case
         when n:Filament then 'community_filament'
-        when n:sFilament then 'community_gigacluster'
+        when n:Gigacluster then 'community_gigacluster'
         when n:Supercluster then 'community_supercluster'
         when n:Cluster then 'community_cluster'
         when n:Galaxy then 'community_galaxy'
@@ -10,7 +10,7 @@ set n.propertyName = case
 end
 set n.prefix = case
         when n:Filament then 'wf'
-        when n:sFilament then 'f'
+        when n:Gigacluster then 'f'
         when n:Supercluster then 's'
         when n:Cluster then 'c'
         when n:Galaxy then 'g'
@@ -19,7 +19,7 @@ set n.prefix = case
 end
 set n.type = case
         when n:Filament then 'Filament'
-        when n:sFilament then 'Gigacluster'
+        when n:Gigacluster then 'Gigacluster'
         when n:Supercluster then 'Supercluster'
         when n:Cluster then 'Cluster'
         when n:Galaxy then 'Galaxy'
@@ -28,7 +28,7 @@ set n.type = case
 end
 set n.resolution = case
         when n:Filament then '1'
-        when n:sFilament then '1'
+        when n:Gigacluster then '1'
         when n:Supercluster then '5'
         when n:Cluster then '10'
         when n:Galaxy then '24'
@@ -37,7 +37,7 @@ set n.resolution = case
 end
 set n.algo = case
         when n:Filament then 'weak'
-        when n:sFilament then 'strong'
+        when n:Gigacluster then 'strong'
         when n:Supercluster then 'strong'
         when n:Cluster then 'strong'
         when n:Galaxy then 'strong'
@@ -45,7 +45,7 @@ set n.algo = case
         when n:Constellation then 'strong'
 end;
 
-match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament|Filament)
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
 with n
 match (leader:Account)
 where n.leader = leader.handle
@@ -54,14 +54,14 @@ set n.name = n.prefix + '_' + leader.handle;
 
 :auto
 with "
-match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament|Filament) where n.community is not null
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament) where n.community is not null
 with n
 with collect(n) as nodepool, collect({did: n.did, handle: n.name, cType: labels(n)[0], community: n.prefix + coalesce(n.community), size: n.size}) as nodes
 unwind nodepool as from
 with nodepool, nodes, from
 call {
     with from, nodepool
-    match (from)-[r:(IS_PARENT_wFILAMENT|IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament|Filament)
+    match (from)-[r:(IS_PARENT_wFILAMENT|IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
     where from <> to
         and to in nodepool
     with from, to, collect(distinct r) as rels
@@ -87,14 +87,14 @@ return file, rows, time, done;
 
 :auto
 with "
-match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament) where n.community is not null
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster) where n.community is not null
 with n
 with collect(n) as nodepool, collect({did: n.did, handle: n.name, cType: labels(n)[0], community: n.prefix + coalesce(n.community), size: n.size}) as nodes
 unwind nodepool as from
 with nodepool, nodes, from
 call {
     with from, nodepool
-    match (from)-[r:(IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|sFilament)
+    match (from)-[r:(IS_PARENT_STRONGFILAMENT|IS_PARENT_STRONGSUPERCLUSTER|IS_PARENT_STRONGCLUSTER|IS_PARENT_GALAXY|IS_PARENT_NEBULA)]->(to:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster)
     where from <> to
         and to in nodepool
     with from, to, collect(distinct r) as rels
@@ -120,7 +120,7 @@ return file, rows, time, done;
 
 :auto
 with "
-    match (c:sFilament|Supercluster|Cluster|Galaxy|Nebula|Constellation)
+    match (c:Gigacluster|Supercluster|Cluster|Galaxy|Nebula|Constellation)
     with c
     order by c.name
     with collect({
@@ -175,7 +175,7 @@ call {
     order by n.did
     call {
         with n
-        match (f:sFilament {community: n.community_gigacluster})
+        match (f:Gigacluster {community: n.community_gigacluster})
         optional match (s:Supercluster {community: n.community_supercluster})
         optional match (c:Cluster {community: n.community_cluster})
         optional match (g:Galaxy {community: n.community_galaxy})
@@ -226,7 +226,7 @@ call {
     order by n.handle
     call {
         with n
-        match (f:sFilament {community: n.community_gigacluster})
+        match (f:Gigacluster {community: n.community_gigacluster})
         optional match (s:Supercluster {community: n.community_supercluster})
         optional match (c:Cluster {community: n.community_cluster})
         optional match (g:Galaxy {community: n.community_galaxy})
@@ -249,12 +249,12 @@ return file, rows, time, done;
 // ------------------------------------------------- SKYFEED -------------------------------------------------
 
 //communities to users
-//wf[:_]Filament      =>f[:_]sFilament             =>s[:_]Supercluster             =>c[:_]Cluster              =>g[:_]Galaxy        =>e[:_]Nebula        =>o[:_]Constellation
+//wf[:_]Filament      =>f[:_]Gigacluster             =>s[:_]Supercluster             =>c[:_]Cluster              =>g[:_]Galaxy        =>e[:_]Nebula        =>o[:_]Constellation
 //wf                   =>f                          =>s                              =>c                          =>g                  =>e                  =>o
 //community_filament   =>community_gigacluster   =>community_supercluster   => community_cluster   =>community_galaxy   =>community_nebula   =>community_constellation
 
 :auto
-match (c:sFilament)
+match (c:Gigacluster)
 with c
 with "
 call {
@@ -441,7 +441,7 @@ return file, rows, time, done;
 //     order by n.handle
 //     call {
 //         with n
-//         match (f:sFilament {community: n.community_gigacluster})
+//         match (f:Gigacluster {community: n.community_gigacluster})
 //         optional match (s:Supercluster {community: n.community_supercluster})
 //         optional match (c:Cluster {community: n.community_cluster})
 //         optional match (g:Galaxy {community: n.community_galaxy})
