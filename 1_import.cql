@@ -1,5 +1,14 @@
-// Shutdown Neo4j and run full import (you might need to re-run indexes):
+// you'll need data dumps (up to 15GB per file, those are not included):
+// follows.csv
+// like_counts.csv
+// post_counts.csv
+// handles.csv
+// optout.csv
+// dids.csv
+// timestamp.csv
+
 // min Neo4j version: 5.18.1
+// Shutdown Neo4j and run full import (you might need to re-run indexes):
 
 ./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination neo4j
 
