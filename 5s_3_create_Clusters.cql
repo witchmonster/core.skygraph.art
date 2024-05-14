@@ -24,11 +24,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_cluster=community
+and a.optOut is null
 return n.handle as leader, n.community_supercluster as leaderParent
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_cluster=community
+and a.optOut is null
 with n
 order by n.weight desc
 limit 50
