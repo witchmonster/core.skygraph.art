@@ -1,15 +1,15 @@
-// match (n:Galaxy)-[r]-() delete r;
-// match (n:Galaxy) delete n;
+// match (n:Nebula)-[r]-() delete r;
+// match (n:Nebula) delete n;
 
-match (n) where n.community_galaxy is not null
+match (n) where n.community_nebula is not null
 // and n.interactions>=500
-with n.community_galaxy as c,
+with n.community_nebula as c,
     count(n) as size
 where size >= 10
 with collect(c) as communities
 call {
     with communities
-    call gds.conductance.stream('undirected_galaxy', {communityProperty: 'community_galaxy', relationshipWeightProperty: 'harmonicWeight'})
+    call gds.conductance.stream('undirected_nebula', {communityProperty: 'community_nebula', relationshipWeightProperty: 'harmonicWeight'})
     yield community, conductance
     where community in communities
     return apoc.map.fromPairs(collect([community, conductance])) as conductance
@@ -18,19 +18,17 @@ unwind communities as community
 with
   conductance,
   community,
-  count { (n:Account {community_galaxy: community})} as totalCount
-
-where totalCount >= 0
+  count { (n:Account {community_nebula: community})} as totalCount
 
 with *
 call { with community match (n:Account)
-where n.community_galaxy=community
+where n.community_nebula=community
 and n.optOut is null
-return n.community_cluster as leaderParent, n.handle as leader
+return n.community_galaxy as leaderParent, n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
-where n.community_galaxy=community
+where n.community_nebula=community
 and n.optOut is null
 with n
 order by n.weight desc
@@ -48,7 +46,7 @@ where totalCount >= 10
 // return sum(totalCount);
 
 with community, conductance, leader, totalCount, leaderParent, leaders
-merge (n:Galaxy {community:community})
+merge (n:Nebula {community:community})
 on create
 set n.community = community,
 n.conductance = conductance,
@@ -57,6 +55,6 @@ n.leader = leader,
 n.leaders = leaders,
 n.size = totalCount
 on match
-n.leaderParent = leaderParent,
+set n.leaderParent = leaderParent,
 n.leader = leader,
 n.leaders = leaders;

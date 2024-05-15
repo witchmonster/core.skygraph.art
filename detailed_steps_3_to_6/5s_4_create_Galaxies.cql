@@ -1,15 +1,15 @@
-// match (n:Constellation)-[r]-() delete r;
-// match (n:Constellation) delete n;
+// match (n:Galaxy)-[r]-() delete r;
+// match (n:Galaxy) delete n;
 
-match (n) where n.community_constellation is not null
+match (n) where n.community_galaxy is not null
 // and n.interactions>=500
-with n.community_constellation as c,
+with n.community_galaxy as c,
     count(n) as size
 where size >= 10
 with collect(c) as communities
 call {
     with communities
-    call gds.conductance.stream('undirected_constellation', {communityProperty: 'community_constellation', relationshipWeightProperty: 'harmonicWeight'})
+    call gds.conductance.stream('undirected_galaxy', {communityProperty: 'community_galaxy', relationshipWeightProperty: 'harmonicWeight'})
     yield community, conductance
     where community in communities
     return apoc.map.fromPairs(collect([community, conductance])) as conductance
@@ -18,17 +18,19 @@ unwind communities as community
 with
   conductance,
   community,
-  count { (n:Account {community_constellation: community})} as totalCount
+  count { (n:Account {community_galaxy: community})} as totalCount
+
+where totalCount >= 0
 
 with *
 call { with community match (n:Account)
-where n.community_constellation=community
+where n.community_galaxy=community
 and n.optOut is null
-return n.community_nebula as leaderParent, n.handle as leader
+return n.community_cluster as leaderParent, n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
-where n.community_constellation=community
+where n.community_galaxy=community
 and n.optOut is null
 with n
 order by n.weight desc
@@ -46,7 +48,7 @@ where totalCount >= 10
 // return sum(totalCount);
 
 with community, conductance, leader, totalCount, leaderParent, leaders
-merge (n:Constellation {community:community})
+merge (n:Galaxy {community:community})
 on create
 set n.community = community,
 n.conductance = conductance,
@@ -55,6 +57,6 @@ n.leader = leader,
 n.leaders = leaders,
 n.size = totalCount
 on match
-n.leaderParent = leaderParent,
+set n.leaderParent = leaderParent,
 n.leader = leader,
 n.leaders = leaders;
