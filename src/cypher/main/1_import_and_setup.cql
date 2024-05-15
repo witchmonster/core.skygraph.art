@@ -48,13 +48,12 @@ END;
 $$ LANGUAGE sql STRICT IMMUTABLE;
 // then simply use `sum(ladderq(records.created_at::TIMESTAMP))` instead of `count(*)` in your export queries
 
-// If using Neo4j Desktop, create dbs (`monthlyv4`, `fullv4`) through Neo4j Desktop UI first, before using neo4j-admin
-// note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
-
-
 // ------------------------------ BULK IMPORT CSVS (few minutes) ------------------------------
 
 cd $NEO4J_HOME
+
+// If using Neo4j Desktop, create dbs (`monthlyv4`, `fullv4`) through Neo4j Desktop UI first, before using neo4j-admin
+// note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
 
 // Shutdown Neo4j and run full import:
 ./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination fullv4
