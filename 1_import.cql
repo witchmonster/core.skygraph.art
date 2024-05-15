@@ -1,5 +1,5 @@
-// Install Neo4j Desktop: https://neo4j.com/download/neo4j-desktop
-// DO NOT USE Docker Neo4j versions! Read the license carefully if you do.
+// Install Neo4j Desktop: https://neo4j.com/download
+// DO NOT USE Neo4j with Docker or any of enterprise versions! Community edition only. Read the license carefully otherwise.
 // min Neo4j version: 5.19.0
 
 // Add lines from `neo4j.conf` and `apoc.conf` to your Neo4j settings
@@ -152,15 +152,6 @@ call {
 
 // Shut down Neo4j, run the import again with new relationships
 ./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination monthlyv4
-
-
-// optional and experimental (instead of full import above)
-// a fake file empty.csv in the import dir with just one line:
-// did:ID{label:Account}
-// ./bin/neo4j-admin database import incremental --force --relationships WEIGHTED=import/weights.csv --nodes Account=import/empty.csv fullv4
-
-// ./bin/neo4j-admin database import incremental --force --relationships WEIGHTED=import/monthly/weights.csv --nodes Account=import/empty.csv monthlyv4
-
 
 // And start Neo4j again
 
