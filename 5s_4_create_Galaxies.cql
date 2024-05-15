@@ -25,13 +25,13 @@ where totalCount >= 0
 with *
 call { with community match (n:Account)
 where n.community_galaxy=community
-and a.optOut is null
+and n.optOut is null
 return n.community_cluster as leaderParent, n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_galaxy=community
-and a.optOut is null
+and n.optOut is null
 with n
 order by n.weight desc
 limit 50
@@ -47,16 +47,16 @@ where totalCount >= 10
 // with community, conductance, leader, totalCount, leaderParent, leaders
 // return sum(totalCount);
 
-// with community, conductance, leader, totalCount, leaderParent, leaders
-// merge (n:Galaxy {community:community})
-// on create
-// set n.community = community,
-// n.conductance = conductance,
-// n.leaderParent = leaderParent,
-// n.leader = leader,
-// n.leaders = leaders,
-// n.size = totalCount
-// on match
-// n.leaderParent = leaderParent,
-// n.leader = leader,
-// n.leaders = leaders
+with community, conductance, leader, totalCount, leaderParent, leaders
+merge (n:Galaxy {community:community})
+on create
+set n.community = community,
+n.conductance = conductance,
+n.leaderParent = leaderParent,
+n.leader = leader,
+n.leaders = leaders,
+n.size = totalCount
+on match
+n.leaderParent = leaderParent,
+n.leader = leader,
+n.leaders = leaders;
