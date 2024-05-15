@@ -1,3 +1,6 @@
+//Use `neo4j.conf` and `apoc.conf` for your Neo4j Desktop setup\
+// min Neo4j version: 5.18.1
+
 // you'll need data dumps (up to 15GB per file for full import and up to 2GB for monthly, files are not included):
 // follows.csv
 // like_counts.csv
@@ -7,7 +10,6 @@
 // dids.csv
 // timestamp.csv
 
-// min Neo4j version: 5.18.1
 // note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
 
 // Shutdown Neo4j and run full import:
