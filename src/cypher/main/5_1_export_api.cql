@@ -206,8 +206,8 @@ return file, rows, time, done;
 match (p:Prefix)
 delete p;
 match (n:Account)
-with distinct left(n.handle, 3) as prefix
-create (p:Prefix {value:toLower(prefix)});
+with distinct toLower(left(n.handle, 3)) as prefix
+create (p:Prefix {value:prefix});
 
 :auto
 with "
