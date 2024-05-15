@@ -74,7 +74,7 @@
 // “It is the end, and the beginning.” — His Divine Shadow
 :param gigaclusterGamma => 1;
 // https://en.wikipedia.org/wiki/Supercluster
-:param superClusterGamma => 5;
+:param superclusterGamma => 5;
 // https://en.wikipedia.org/wiki/Galaxy_cluster
 :param clusterGamma => 10;
 // https://en.wikipedia.org/wiki/Galaxy
