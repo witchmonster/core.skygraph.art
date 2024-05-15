@@ -8,6 +8,8 @@
 // timestamp.csv
 
 // min Neo4j version: 5.18.1
+// note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
+
 // Shutdown Neo4j and run full import:
 ./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination fullv4
 

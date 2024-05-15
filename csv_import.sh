@@ -9,7 +9,6 @@ timestamp=$(date +'%Y%m%d' --utc)
 filesToBackup=(
     "handles.csv"
     "dids.csv"
-    "blocks.csv"
     "follows.csv"
     "like_counts.csv"
     "post_counts.csv"
