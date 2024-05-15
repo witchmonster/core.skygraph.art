@@ -1,3 +1,5 @@
+:param graphVersion => 4;
+
 match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
 set n.propertyName = case
         when n:Filament then 'community_filament'

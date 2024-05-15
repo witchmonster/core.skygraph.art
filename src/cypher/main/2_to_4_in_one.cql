@@ -1,3 +1,4 @@
+:param graphVersion => 4;
 :param filamentGamma => 1;
 :param gigaclusterGamma => 1;
 :param superclusterGamma => 5;

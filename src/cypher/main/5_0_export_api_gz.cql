@@ -1,3 +1,5 @@
+:param graphVersion => 4;
+
 :auto
 with "
 match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament) where n.community is not null
