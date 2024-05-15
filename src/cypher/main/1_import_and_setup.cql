@@ -67,6 +67,8 @@ cd $NEO4J_HOME
 
 // ------------------------------ AGGREGATE INTERACTIONS (few minutes) ------------------------------
 
+// Start Neo4j DB
+
 // run all cypher queries for both dbs. switch between dbs:
 :use fullv4
 :use monthlyv4
