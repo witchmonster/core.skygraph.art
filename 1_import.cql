@@ -1,4 +1,4 @@
-// you'll need data dumps (up to 15GB per file, those are not included):
+// you'll need data dumps (up to 15GB per file for full import and up to 2GB for monthly, files are not included):
 // follows.csv
 // like_counts.csv
 // post_counts.csv
@@ -17,6 +17,11 @@
 ./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --overwrite-destination monthlyv4
 
 //add indexes (same for both dbs)
+start database fullv4
+:use fullv4
+
+// start database monthlyv4
+// :use monthlyv4
 
 CREATE CONSTRAINT account_unique IF NOT EXISTS
 FOR (n:Account)
