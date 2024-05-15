@@ -229,7 +229,7 @@ return file, rows, time, done;
 //     match (n:Account)
 //     where n.handle starts with $prefix
 //     and n.weight > 0
-//     and not n.optOut=true
+//     and n.optOut is null
 //     with n
 //     order by n.handle
 //     call {
