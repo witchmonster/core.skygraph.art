@@ -54,7 +54,7 @@ where n.leader = leader.handle
 set n.did = n.prefix + '_' + leader.did
 set n.name = n.prefix + '_' + leader.handle;
 
-// ------------------------------- atlas.skygraph.art -------------------------------
+// ------------------------------- map.skygraph.art -------------------------------
 
 :auto
 with "
@@ -257,7 +257,7 @@ return file, rows, time, done;
 // DEPRECATED. use plc.directory and did index to look up handles
 
 
-// ------------------------------- atlas.skygraph.art -------------------------------
+// ------------------------------- map.skygraph.art -------------------------------
 
 
 
