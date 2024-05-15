@@ -30,7 +30,7 @@ limit 1
 return r.portion as portion, p.community as topParent, p.leader as parentLeader
 }
 with c, portion, topParent
-set c.topParent=topParent, c.topParentPortion=portion
+set c.topParent=topParent, c.topParentPortion=portion;
 
 // -------------------- Gigaclusters --------------------
 
@@ -68,7 +68,7 @@ limit 1
 return r.portion as portion, p.community as topParent, p.leader as parentLeader
 }
 with c, portion, topParent
-set c.topParent=topParent, c.topParentPortion=portion
+set c.topParent=topParent, c.topParentPortion=portion;
 
 // -------------------- Superclusters --------------------
 
