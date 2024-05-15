@@ -207,7 +207,7 @@ match (p:Prefix)
 delete p;
 match (n:Account)
 with distinct left(n.handle, 3) as prefix
-create (p:Prefix {value:prefix});
+create (p:Prefix {value:toLower(prefix)});
 
 :auto
 with "
