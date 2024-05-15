@@ -203,56 +203,56 @@ return file, rows, time, done;
 
 // DEPRECATED. use plc.directory and did index to look up handles
 
-// match (p:Prefix)
-// delete p;
-// match (n:Account)
-// with distinct left(n.handle, 3) as prefix
-// create (p:Prefix {value:prefix});
+match (p:Prefix)
+delete p;
+match (n:Account)
+with distinct left(n.handle, 3) as prefix
+create (p:Prefix {value:prefix});
 
-// :auto
-// with "
-// match (p:Prefix)
-// with p
-// with collect(p.value) as nodes
-// return $graphVersion as graphVersion, nodes
-// " as query
-// call apoc.export.json.query(query, '/export/search/prefixes.json', {jsonFormat: 'JSON', params: {
-// graphVersion:$graphVersion}} )
-// yield file, rows, time, done
-// return file, rows, time, done;
+:auto
+with "
+match (p:Prefix)
+with p
+with collect(p.value) as nodes
+return $graphVersion as graphVersion, nodes
+" as query
+call apoc.export.json.query(query, '/export/search/prefixes.json', {jsonFormat: 'JSON', params: {
+graphVersion:$graphVersion}} )
+yield file, rows, time, done
+return file, rows, time, done;
 
-// :auto
-// match (p:Prefix)
-// with p
-// with "
-// call {
-//     match (n:Account)
-//     where n.handle starts with $prefix
-//     and n.weight > 0
-//     and n.optOut is null
-//     with n
-//     order by n.handle
-//     call {
-//         with n
-//         match (f:Gigacluster {community: n.community_gigacluster})
-//         optional match (s:Supercluster {community: n.community_supercluster})
-//         optional match (c:Cluster {community: n.community_cluster})
-//         optional match (g:Galaxy {community: n.community_galaxy})
-//         optional match (e:Nebula {community: n.community_nebula})
-//         optional match (o:Constellation {community: n.community_constellation})
-//         with collect('f' + coalesce(f.community)) + collect('s' + coalesce(s.community)) + collect('c' + coalesce(c.community)) + collect('g' + coalesce(g.community)) + collect('e' + coalesce(e.community)) + collect('o' + coalesce(o.community)) as communities where size(communities) > 0
-//         return communities
-//     }
-//     with collect({did: n.did, handle: n.handle, communities: communities }) as nodes
-//     return $graphVersion as graphVersion, nodes
-// } in transactions
-// return graphVersion, nodes
-// " as query, p
-// call apoc.export.json.query(query, '/export/search/search_' + p.value + '.json', {jsonFormat: 'JSON', params: {
-// graphVersion:$graphVersion,
-// prefix:p.value}} )
-// yield file, rows, time, done
-// return file, rows, time, done;
+:auto
+match (p:Prefix)
+with p
+with "
+call {
+    match (n:Account)
+    where n.handle starts with $prefix
+    and n.weight > 0
+    and n.optOut is null
+    with n
+    order by n.handle
+    call {
+        with n
+        match (f:Gigacluster {community: n.community_gigacluster})
+        optional match (s:Supercluster {community: n.community_supercluster})
+        optional match (c:Cluster {community: n.community_cluster})
+        optional match (g:Galaxy {community: n.community_galaxy})
+        optional match (e:Nebula {community: n.community_nebula})
+        optional match (o:Constellation {community: n.community_constellation})
+        with collect('f' + coalesce(f.community)) + collect('s' + coalesce(s.community)) + collect('c' + coalesce(c.community)) + collect('g' + coalesce(g.community)) + collect('e' + coalesce(e.community)) + collect('o' + coalesce(o.community)) as communities where size(communities) > 0
+        return communities
+    }
+    with collect({did: n.did, handle: n.handle, communities: communities }) as nodes
+    return $graphVersion as graphVersion, nodes
+} in transactions
+return graphVersion, nodes
+" as query, p
+call apoc.export.json.query(query, '/export/search/search_' + p.value + '.json', {jsonFormat: 'JSON', params: {
+graphVersion:$graphVersion,
+prefix:p.value}} )
+yield file, rows, time, done
+return file, rows, time, done;
 
 // DEPRECATED. use plc.directory and did index to look up handles
 
