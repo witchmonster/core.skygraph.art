@@ -1,3 +1,10 @@
+:param filamentGamma => 1;
+:param gigaclusterGamma => 1;
+:param superclusterGamma => 5;
+:param clusterGamma => 10;
+:param galaxyGamma => 24;
+:param nebulaGamma => 100;
+:param constellationGamma => 200;
 
 CALL gds.graph.project(
   'undirected_filament',
@@ -20,8 +27,8 @@ CALL gds.leiden.mutate('undirected_filament', { mutateProperty: 'community_filam
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_filament', 'community_filament');
 
-// match (n:Filament)-[r]-() delete r;
-// match (n:Filament) delete n;
+match (n:Filament)-[r]-() delete r;
+match (n:Filament) delete n;
 
 //conductance is only available while you have GDS live in memory
 match (n) where n.community_filament is not null
@@ -97,8 +104,8 @@ CALL gds.leiden.mutate('undirected_gigacluster', { mutateProperty: 'community_gi
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_gigacluster', 'community_gigacluster');
 
-// match (n:Gigacluster)-[r]-() delete r;
-// match (n:Gigacluster) delete n;
+match (n:Gigacluster)-[r]-() delete r;
+match (n:Gigacluster) delete n;
 
 //conductance is only available while you have GDS live in memory
 match (n) where n.community_gigacluster is not null
@@ -172,8 +179,8 @@ CALL gds.leiden.mutate('undirected_supercluster', { mutateProperty: 'community_s
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_supercluster', 'community_supercluster');
 
-// match (n:Supercluster)-[r]-() delete r;
-// match (n:Supercluster) delete n;
+match (n:Supercluster)-[r]-() delete r;
+match (n:Supercluster) delete n;
 
 //conductance is only available while you have GDS live in memory
 match (n) where n.community_supercluster is not null
@@ -253,8 +260,8 @@ CALL gds.leiden.mutate('undirected_cluster', { mutateProperty: 'community_cluste
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_cluster', 'community_cluster');
 
-// match (n:Cluster)-[r]-() delete r;
-// match (n:Cluster) delete n;
+match (n:Cluster)-[r]-() delete r;
+match (n:Cluster) delete n;
 
 //conductance is only available while you have GDS live in memory
 match (n) where n.community_cluster is not null
@@ -333,8 +340,8 @@ CALL gds.leiden.mutate('undirected_galaxy', { mutateProperty: 'community_galaxy'
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_galaxy', 'community_galaxy');
 
-// match (n:Galaxy)-[r]-() delete r;
-// match (n:Galaxy) delete n;
+match (n:Galaxy)-[r]-() delete r;
+match (n:Galaxy) delete n;
 
 match (n) where n.community_galaxy is not null
 // and n.interactions>=500
@@ -414,8 +421,8 @@ CALL gds.leiden.mutate('undirected_nebula', { mutateProperty: 'community_nebula'
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_nebula', 'community_nebula');
 
-// match (n:Nebula)-[r]-() delete r;
-// match (n:Nebula) delete n;
+match (n:Nebula)-[r]-() delete r;
+match (n:Nebula) delete n;
 
 match (n) where n.community_nebula is not null
 // and n.interactions>=500
@@ -493,8 +500,8 @@ CALL gds.leiden.mutate('undirected_constellation', { mutateProperty: 'community_
 YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
 call gds.graph.nodeProperties.write('undirected_constellation', 'community_constellation');
 
-// match (n:Constellation)-[r]-() delete r;
-// match (n:Constellation) delete n;
+match (n:Constellation)-[r]-() delete r;
+match (n:Constellation) delete n;
 
 match (n) where n.community_constellation is not null
 // and n.interactions>=500
