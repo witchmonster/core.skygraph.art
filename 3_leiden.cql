@@ -1,4 +1,3 @@
-// increment whenever you run ANY LEIDEN
 // leiden runs are non-deterministic, every run even on stable gamma will generate slightly different communities
 :param graphVersion => 4;
 
@@ -38,15 +37,15 @@
 // https://en.wikipedia.org/wiki/Open_cluster
 // https://en.wikipedia.org/wiki/Embedded_cluster
 
-// banned entities (manual only)
+// other entities
 // https://en.wikipedia.org/wiki/Dark_galaxy
 
 // galactic entities
 // https://en.wikipedia.org/wiki/Galaxy
 
 
-// subgalactic non-astronomic formations (overlays)
-// Astrology level
+// subgalactic non-astronomic formations
+
 // https://en.wikipedia.org/wiki/Nebula
 // https://en.wikipedia.org/wiki/Constellation
 
@@ -55,7 +54,7 @@
 // ---------------- mode: WEAK (FLR->NOAGGR->COUNT->UDSUM) -------------------
 //non-mutual interactions count towards gravity
 
-// galaxy filaments (megaclusters)
+// galaxy filaments
 // https://en.wikipedia.org/wiki/Galaxy_filament
 // enourmous formations, largest in the universe e.g. Japanese language cluster (over 1.3 mil accounts)
 // used to guide filaments only, real filaments will be built as groups of superclusters
@@ -70,6 +69,7 @@
 
 // ---------------- mode: STRONG (FLR->WSLOGSUM->MOOTHAVG->UDMAX) -------------------
 
+// ~40% of accounts reside in strong communities
 // https://lexx.fandom.com/wiki/Giga_Shadow
 // “It is the end, and the beginning.” — His Divine Shadow
 :param gigaclusterGamma => 1;
@@ -77,21 +77,11 @@
 :param superClusterGamma => 5;
 // https://en.wikipedia.org/wiki/Galaxy_cluster
 :param clusterGamma => 10;
-
-
 // https://en.wikipedia.org/wiki/Galaxy
-// galaxies - ~35% of accounts reside in galaxies - strongest and the most stable communities
-//>=10 of 500+, min   500 - Dwarf (tiny, )    - 10% live in dwarf galaxies
-//>=10 of 500+, min  2000 - Spiral (normal) - 20% live in spiral galaxies
-//>=10 of 500+, min 10000 - Giant (huge)    - 5% live in giant galaxies
 :param galaxyGamma => 24;
-
 // https://en.wikipedia.org/wiki/Nebula
-//sub-communities
 :param nebulaGamma => 100;
-
 // https://en.wikipedia.org/wiki/Constellation
-//niche communities
 :param constellationGamma => 200;
 
 // ---------------- mode: STRONG (FLR->WSLOGSUM->MOOTHAVG->UDMAX) -------------------

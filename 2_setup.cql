@@ -1,4 +1,4 @@
-// Set weight to each node
+// Set weight to each node (can take up to 2 hours)
 :auto
 match (from:Account)
 where from.weight is null
