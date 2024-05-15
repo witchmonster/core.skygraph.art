@@ -1,6 +1,6 @@
 // increment whenever you run ANY LEIDEN
 // leiden runs are non-deterministic, every run even on stable gamma will generate slightly different communities
-:param graphVersion => 3;
+:param graphVersion => 4;
 
 // FLR - follows, likes, replies
 
@@ -63,15 +63,19 @@
 // enormous formations
 // filaments - ~80% of accounts reside in filaments
 
-// potential new community type
-:param galaxyOverlayGamma => 30;
+// unused
+// :param galaxyUnderlayGamma => 30;
 // ---------------- mode: WEAK (FLR->NOAGGR->COUNT->UDSUM) -------------------
 
 
 // ---------------- mode: STRONG (FLR->WSLOGSUM->MOOTHAVG->UDMAX) -------------------
 
+// https://lexx.fandom.com/wiki/Giga_Shadow
+// “It is the end, and the beginning.” — His Divine Shadow
 :param gigaclusterGamma => 1;
+// https://en.wikipedia.org/wiki/Supercluster
 :param superClusterGamma => 5;
+// https://en.wikipedia.org/wiki/Galaxy_cluster
 :param clusterGamma => 10;
 
 
@@ -118,31 +122,31 @@ call gds.graph.nodeProperties.write('undirected_filament', 'community_filament')
 
 // -------------------- Filaments --------------------
 
-// -------------------- Galaxy overlays --------------------
+// -------------------- Galaxy underlays --------------------
 
-call gds.graph.drop('undirected_cluster', false);
-CALL gds.graph.project(
-  'undirected_cluster',
-  'Account',
-{
-  FOLLOWS: {
-    orientation: 'UNDIRECTED' },
-  REPLIED: {
-    orientation: 'UNDIRECTED',
-    properties: {count: {aggregation:'SUM'}}},
-  LIKED: {
-    orientation: 'UNDIRECTED',
-    properties: {count: {aggregation:'SUM'}}}
-}
-)
-YIELD graphName AS graph, nodeCount AS nodes, relationshipCount AS rels;
+// call gds.graph.drop('undirected_galaxyunderlay', false);
+// CALL gds.graph.project(
+//   'undirected_galaxyunderlay',
+//   'Account',
+// {
+//   FOLLOWS: {
+//     orientation: 'UNDIRECTED' },
+//   REPLIED: {
+//     orientation: 'UNDIRECTED',
+//     properties: {count: {aggregation:'SUM'}}},
+//   LIKED: {
+//     orientation: 'UNDIRECTED',
+//     properties: {count: {aggregation:'SUM'}}}
+// }
+// )
+// YIELD graphName AS graph, nodeCount AS nodes, relationshipCount AS rels;
 
-// call gds.graph.nodeProperties.drop('undirected_cluster', 'community_cluster');
-CALL gds.leiden.mutate('undirected_cluster', { mutateProperty: 'community_cluster', gamma: $galaxyOverlayGamma })
-YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
-call gds.graph.nodeProperties.write('undirected_cluster', 'community_cluster');
+// // call gds.graph.nodeProperties.drop('undirected_galaxyunderlay', 'community_galaxyunderlay');
+// CALL gds.leiden.mutate('undirected_galaxyunderlay', { mutateProperty: 'community_galaxyunderlay', gamma: $galaxyUnderlayGamma })
+// YIELD didConverge, ranLevels, modularity, communityCount, modularities, communityDistribution;
+// call gds.graph.nodeProperties.write('undirected_galaxyunderlay', 'community_galaxyunderlay');
 
-// -------------------- Galaxy overlays --------------------
+// -------------------- Galaxy underlays --------------------
 
 // ---------------------------------------------------------- WEAK ^ -----------------------------------------
 

@@ -10,7 +10,7 @@
 // min Neo4j version: 5.18.1
 // Shutdown Neo4j and run full import (you might need to re-run indexes):
 
-./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination neo4j
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination fullv4
 
 //add indexes
 
@@ -123,7 +123,12 @@ call {
 :auto call custom.calculateWeights('weights.csv') yield filename, rows, time;
 
 // Shut down Neo4j, run the import again with new relationships
-./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination neo4j
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
+
+// optional and experimental (instead of full import above)
+// a fake file empty.csv in the import dir with just one line:
+// did:ID{label:Account}
+// ./bin/neo4j-admin database import incremental --force --relationships WEIGHTED=import/weights_month.csv --nodes Account=import/empty.csv monthlyv4
 
 // And start Neo4j again
 
