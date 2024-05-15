@@ -1,5 +1,13 @@
-//Use `neo4j.conf` and `apoc.conf` for your Neo4j Desktop setup\
-// min Neo4j version: 5.18.1
+// Install Neo4j Desktop: https://neo4j.com/download/neo4j-desktop
+// DO NOT USE Docker Neo4j versions! Read the license carefully if you do.
+// min Neo4j version: 5.19.0
+
+// Add lines from `neo4j.conf` and `apoc.conf` to your Neo4j settings
+
+// Install Plugins:
+// APOC (Install through Neo4j desktop)
+// Graph Data Science Library (Install through Neo4j desktop)
+// APOC-extended: Download and copy to Plugins folder https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/5.19.0/apoc-5.19.0-extended.jar
 
 // you'll need data dumps (up to 15GB per file for full import and up to 2GB for monthly, files are not included):
 // follows.csv
@@ -10,6 +18,7 @@
 // dids.csv
 // timestamp.csv
 
+// Create dbs (`monthlyv4`, `fullv4`) through Neo4j Desktop UI first, before using neo4j-admin
 // note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
 
 // Shutdown Neo4j and run full import:
@@ -116,7 +125,7 @@ create index communityConstellation IF NOT EXISTS for (n:Account) on (n.communit
 
 // run lib.cql
 
-// Count likes, posts, follows of each user
+// Count likes, posts, follows of each user (can take up to 10-15 min)
 :auto match (n:Account)
 call {
   with n
@@ -131,6 +140,7 @@ call {
 
 // Calculate harmonicWeights (up to 2 hours for full dataset)
 // update: with non NVME SSD - can take up to a few days
+:use fullv4
 :auto call custom.calculateWeights('weights.csv') yield filename, rows, time;
 
 // Shut down Neo4j, run the import again with new relationships
