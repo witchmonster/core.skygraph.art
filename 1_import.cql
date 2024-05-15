@@ -165,6 +165,7 @@ call {
 // And start Neo4j again
 
 // Import handles to full
+:use fullv4
 :auto load csv with headers from 'file:///handles.csv' as row
 call {
   with row
