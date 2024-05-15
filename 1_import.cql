@@ -12,7 +12,10 @@
 
 ./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination fullv4
 
-//add indexes
+//import monthly data into a separate db
+./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --overwrite-destination monthlyv4
+
+//add indexes (same for both dbs)
 
 CREATE CONSTRAINT account_unique IF NOT EXISTS
 FOR (n:Account)
@@ -118,22 +121,41 @@ call {
   n.replies = replies
 } in transactions;
 
-// Calculate harmonicWeights (up to 2 hours)
+// Calculate harmonicWeights (up to 2 hours for full dataset)
 // update: with non NVME SSD - can take up to a few days
 :auto call custom.calculateWeights('weights.csv') yield filename, rows, time;
 
 // Shut down Neo4j, run the import again with new relationships
 ./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
 
+//same for monthlyv4
+:use monthlyv4
+:auto call custom.calculateWeights('monthly/weights.csv') yield filename, rows, time;
+
+// Shut down Neo4j, run the import again with new relationships
+./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination monthlyv4
+
+
 // optional and experimental (instead of full import above)
 // a fake file empty.csv in the import dir with just one line:
 // did:ID{label:Account}
-// ./bin/neo4j-admin database import incremental --force --relationships WEIGHTED=import/weights_month.csv --nodes Account=import/empty.csv monthlyv4
+// ./bin/neo4j-admin database import incremental --force --relationships WEIGHTED=import/weights.csv --nodes Account=import/empty.csv fullv4
+
+// ./bin/neo4j-admin database import incremental --force --relationships WEIGHTED=import/monthly/weights.csv --nodes Account=import/empty.csv monthlyv4
+
 
 // And start Neo4j again
 
-// Import handles
+// Import handles to full
 :auto load csv with headers from 'file:///handles.csv' as row
+call {
+  with row
+  match (n:Account {did: row["did:ID"]}) set n.handle=row.handle
+} in transactions;
+
+// Import handles to monthly
+:use monthlyv4
+:auto load csv with headers from 'file:///monthly/handles.csv' as row
 call {
   with row
   match (n:Account {did: row["did:ID"]}) set n.handle=row.handle
