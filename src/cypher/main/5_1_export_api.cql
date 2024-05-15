@@ -229,7 +229,7 @@ return file, rows, time, done;
 //     match (n:Account)
 //     where n.handle starts with $prefix
 //     and n.weight > 0
-//     and not to.optOut=true
+//     and not n.optOut=true
 //     with n
 //     order by n.handle
 //     call {
@@ -248,7 +248,7 @@ return file, rows, time, done;
 // } in transactions
 // return graphVersion, nodes
 // " as query, p
-// call apoc.export.json.query(query, '/export/api/user/byHandlePrefix/search_' + p.value + '.json', {jsonFormat: 'JSON', params: {
+// call apoc.export.json.query(query, '/export/search/search_' + p.value + '.json', {jsonFormat: 'JSON', params: {
 // graphVersion:$graphVersion,
 // prefix:p.value}} )
 // yield file, rows, time, done
