@@ -146,6 +146,7 @@ return file, rows, time, done;
 
 match (p:DidPrefix)
 delete p;
+
 match (n:Account)
 with distinct left(n.did, 11) as didPrefix
 create (p:DidPrefix {value:didPrefix});
