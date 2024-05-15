@@ -57,9 +57,9 @@ for csv in ${filesToBackup[@]}; do
     if test -f ${NEO4J_DB_DIR}/import/monthly/$csv; then
         echo "Skipping $csv. File exists."
     elif [ ${SSH} = true ]; then
-        scp ${SSH_HOST}:${CSV_SRC_DIR}/$csv ${NEO4J_DB_DIR}/import/monthly/$csv
+        scp ${SSH_HOST}:${CSV_SRC_MONTHLY_DIR}/$csv ${NEO4J_DB_DIR}/import/monthly/$csv
     else
-        sync ${CSV_SRC_DIR}/$csv ${NEO4J_DB_DIR}/import/monthly/$csv
+        sync ${CSV_SRC_MONTHLY_DIR}/$csv ${NEO4J_DB_DIR}/import/monthly/$csv
     fi
 done
 
