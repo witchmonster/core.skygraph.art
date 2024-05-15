@@ -1,5 +1,5 @@
 {
-  "name": "cql.skygraph.art",
+  "name": "core.skygraph.art",
   "version": "4.0.0",
   "description": "Community detection queries",
   "main": "index.js",
