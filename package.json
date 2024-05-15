@@ -1,0 +1,9 @@
+{
+  "name": "skygraph.art",
+  "version": "4.0.0",
+  "description": "Community detection queries",
+  "main": "index.js",
+  "repository": "https://github.com/witchmonster/skygraph.art.git",
+  "author": "witch.monster",
+  "license": "see ./LICENCE"
+}
