@@ -47,6 +47,7 @@ CASE
 END;
 $$ LANGUAGE sql STRICT IMMUTABLE;
 // then simply use `sum(ladderq(records.created_at::TIMESTAMP))` instead of `count(*)` in your export queries
+// it will prevent formation of bad quality communities due to older users with many interactions, that are no longer relevant
 
 // ------------------------------ BULK IMPORT CSVS (few minutes) ------------------------------
 
