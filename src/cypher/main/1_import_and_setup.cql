@@ -36,7 +36,7 @@
 // export_start - for timestamp.csv
 // did - for optout.csv
 
-// It is strongly recommended to weigh like and reply counts on a temporal basis: https://bsky.app/profile/skygraph.art/post/3ksk6t7z6un2i
+// It is strongly recommended to weigh like and reply counts on a temporal basis with a 180 day cutoff
 // here's an SQL function to do it
 CREATE OR REPLACE FUNCTION ladderq(date TIMESTAMP) RETURNS integer AS $$
 SELECT
@@ -47,7 +47,11 @@ CASE
   ELSE 1
 END;
 $$ LANGUAGE sql STRICT IMMUTABLE;
-// then simply use `sum(ladderq(records.created_at::TIMESTAMP))` instead of `count(*)` in your export queries
+// then simply use `
+sum(ladderq(records.created_at::TIMESTAMP))
+// instead of `count(*)` in your export queries
+// cutoff can be implemented as:
+and records.created_at > CURRENT_DATE - INTERVAL '180' DAY
 // it will prevent formation of bad quality communities due to older users with many interactions, that are no longer relevant
 
 // ------------------------------ BULK IMPORT CSVS (few minutes) ------------------------------
