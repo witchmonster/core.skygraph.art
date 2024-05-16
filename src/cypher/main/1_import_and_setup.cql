@@ -34,7 +34,7 @@
 // did:ID, - for dids.csv
 // handle, did:ID - for handles.csv
 // export_start - for timestamp.csv
-// did:ID - for optout.csv
+// did - for optout.csv
 
 // It is strongly recommended to weigh like and reply counts on a temporal basis: https://bsky.app/profile/skygraph.art/post/3ksk6t7z6un2i
 // here's an SQL function to do it
