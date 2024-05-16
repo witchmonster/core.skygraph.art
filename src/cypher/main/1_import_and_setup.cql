@@ -104,7 +104,7 @@ call {
 
 // run 0_lib.cql
 
-// Calculate harmonicWeights (up to 2 hours for full dataset)
+// Calculate harmonicWeights (up to 3 hours for full dataset)
 // update: with non-NVME SSD - can take up to a few days
 :use fullv4
 :auto call custom.calculateWeights('weights.csv') yield filename, rows, time;
