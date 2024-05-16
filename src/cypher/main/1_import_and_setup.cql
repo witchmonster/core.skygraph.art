@@ -66,7 +66,7 @@ cd $NEO4J_HOME
 
 
 
-// ------------------------------ AGGREGATE INTERACTIONS (few minutes) ------------------------------
+// ------------------------------ AGGREGATE INTERACTIONS (up to an hour) ------------------------------
 
 // Start Neo4j DB
 
@@ -74,13 +74,16 @@ cd $NEO4J_HOME
 :use fullv4
 :use monthlyv4
 
-// create necessary indexes for
+// create necessary indexes for aggregation
+CREATE CONSTRAINT account_unique IF NOT EXISTS
+FOR (n:Account)
+REQUIRE n.did IS UNIQUE;
 create index interactions IF NOT EXISTS for (n:Account) on (n.interactions);
 create index replies IF NOT EXISTS for (n:Account) on (n.replies);
 create index likes IF NOT EXISTS for (n:Account) on (n.likes);
 create index follows IF NOT EXISTS for (n:Account) on (n.follows);
 
-// Count likes, posts, follows of each user (can take up to 10-15 min)
+// Count likes, posts, follows of each user (can take up to 45-60 min)
 :auto match (n:Account)
 call {
   with n
