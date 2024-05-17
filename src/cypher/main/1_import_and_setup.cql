@@ -36,23 +36,14 @@
 // export_start - for timestamp.csv
 // did - for optout.csv
 
-// It is strongly recommended to weigh like and reply counts on a temporal basis with a 180 day cutoff
-// here's an SQL function to do it
-CREATE OR REPLACE FUNCTION ladderq(date TIMESTAMP) RETURNS integer AS $$
-SELECT
-CASE
-  WHEN date > CURRENT_DATE - INTERVAL '30' DAY THEN 10
-  WHEN date > CURRENT_DATE - INTERVAL '60' DAY THEN 5
-  WHEN date > CURRENT_DATE - INTERVAL '90' DAY THEN 3
-  ELSE 1
-END;
-$$ LANGUAGE sql STRICT IMMUTABLE;
-// then simply use `
-sum(ladderq(records.created_at::TIMESTAMP))
-// instead of `count(*)` in your export queries
-// cutoff can be implemented as:
-and records.created_at > CURRENT_DATE - INTERVAL '180' DAY
-// it will prevent formation of bad quality communities due to older users with many interactions, that are no longer relevant
+// It is strongly recommended to weigh like and reply counts on a temporal basis with a 360 day cutoff
+// here's an SQL snippet on how to do it, use this:
+    count(*) FILTER (WHERE records.created_at > CURRENT_DATE - INTERVAL '30' DAY) * 10 +
+    count(*) FILTER (WHERE records.created_at > CURRENT_DATE - INTERVAL '60' DAY) * 5 +
+    count(*) FILTER (WHERE records.created_at > CURRENT_DATE - INTERVAL '90' DAY) * 3 +
+    count(*) FILTER (WHERE records.created_at > CURRENT_DATE - INTERVAL '360' DAY) * 1 as "count:long"
+// instead of `count(*)` in your export queries for like and reply counts
+// it will prevent formation of bad quality communities due to older users with too many interactions, that are no longer relevant
 
 // ------------------------------ BULK IMPORT CSVS (few minutes) ------------------------------
 
