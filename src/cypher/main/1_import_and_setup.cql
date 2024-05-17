@@ -62,7 +62,7 @@ cd $NEO4J_HOME
 
 
 
-// ------------------------------ AGGREGATE INTERACTIONS (up to an hour) ------------------------------
+// ------------------------------ AGGREGATE INTERACTIONS (minutes) ------------------------------
 
 // Start Neo4j DB
 
@@ -79,7 +79,12 @@ create index replies IF NOT EXISTS for (n:Account) on (n.replies);
 create index likes IF NOT EXISTS for (n:Account) on (n.likes);
 create index follows IF NOT EXISTS for (n:Account) on (n.follows);
 
-// Count likes, posts, follows of each user (can take up to 45-60 min)
+//apparently somehow empty dids are now possible (could be non-plc did?)
+match (n:Account)
+where n.did=''
+detach delete n
+
+// Count likes, posts, follows of each user (can take up to 15 min)
 :auto match (n:Account)
 call {
   with n
@@ -118,9 +123,14 @@ call {
 // bulk import is the fastest way to do this, don't try the LOAD CSV stuff, it will take forever
 
 // Shut down Neo4j, run the import again with new relationships for both dbs
-./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
+// note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
 
-./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination monthlyv4
+//in case if you need FOLLOWS LIKES and REPLIES as separate relationships, it will slow down the database significantly and will double it's size
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
+//otherwise it's recommended to run it with only weighted rels:
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
+
+./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination monthlyv4
 
 // And start Neo4j again
 
@@ -201,11 +211,16 @@ CREATE INDEX rel_index_hweighted_weight IF NOT EXISTS FOR ()-[r:WEIGHTED]->() ON
 // add index for handle
 create index handle IF NOT EXISTS  for (n:Account) on (n.handle);
 create index weight IF NOT EXISTS  for (n:Account) on (n.weight);
+create index optOut IF NOT EXISTS  for (n:Account) on (n.optOut);
+
+// only if you added FOLLOWS, LIKES and REPLIES to your second full import
 create index interactions IF NOT EXISTS for (n:Account) on (n.interactions);
 create index replies IF NOT EXISTS for (n:Account) on (n.replies);
 create index likes IF NOT EXISTS for (n:Account) on (n.likes);
 create index follows IF NOT EXISTS for (n:Account) on (n.follows);
-create index community IF NOT EXISTS for (n:Account) on (n.community);
+
+//probably unused
+// create index community IF NOT EXISTS for (n:Account) on (n.community);
 
 create index communityFilament IF NOT EXISTS for (n:Account) on (n.community_filament);
 create index communityGigacluster IF NOT EXISTS for (n:Account) on (n.community_gigacluster);
@@ -216,13 +231,13 @@ create index communityNebula IF NOT EXISTS for (n:Account) on (n.community_nebul
 create index communityConstellation IF NOT EXISTS for (n:Account) on (n.community_constellation);
 
 //optional, needed for labeling only
-create index communityNameFilament IF NOT EXISTS for (n:Account) on (n.communityNameFilament);
-create index communityNameGigacluster IF NOT EXISTS for (n:Account) on (n.communityNameGigacluster);
-create index communityNameSupercluster IF NOT EXISTS for (n:Account) on (n.communityNameSupercluster);
-create index communityNameCluster IF NOT EXISTS for (n:Account) on (n.communityNameCluster);
-create index communityNameGalaxy IF NOT EXISTS for (n:Account) on (n.communityNameGalaxy);
-create index communityNameNebula IF NOT EXISTS for (n:Account) on (n.communityNameNebula);
-create index communityNameConstellation IF NOT EXISTS for (n:Account) on (n.communityNameConstellation);
+// create index communityNameFilament IF NOT EXISTS for (n:Account) on (n.communityNameFilament);
+// create index communityNameGigacluster IF NOT EXISTS for (n:Account) on (n.communityNameGigacluster);
+// create index communityNameSupercluster IF NOT EXISTS for (n:Account) on (n.communityNameSupercluster);
+// create index communityNameCluster IF NOT EXISTS for (n:Account) on (n.communityNameCluster);
+// create index communityNameGalaxy IF NOT EXISTS for (n:Account) on (n.communityNameGalaxy);
+// create index communityNameNebula IF NOT EXISTS for (n:Account) on (n.communityNameNebula);
+// create index communityNameConstellation IF NOT EXISTS for (n:Account) on (n.communityNameConstellation);
 
 // ------------------------------ CREATE INDEXES ------------------------------
 
@@ -250,9 +265,9 @@ call {
 
 
 
-// ------------------------------ CALCULATE TOTAL PERSONAL WEIGHTS (few minutes) ------------------------------
+// ------------------------------ CALCULATE TOTAL PERSONAL WEIGHTS (up to an hour) ------------------------------
 
-// Set weight to each node (can take up to 2 hours)
+// Set weight to each node (can take up to an hour)
 // run below queries for both dbs
 :use fullv4
 :use monthlyv4

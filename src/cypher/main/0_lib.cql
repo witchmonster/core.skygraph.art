@@ -2,9 +2,9 @@
 call apoc.custom.declareProcedure('calculateWeights(
     filename::STRING,
 
-    followWeight=1::INT?,
-    repliesWeight=100::INT?,
-    likesWeight=10::INT?,
+    followWeight=7::INT?,
+    repliesWeight=62::INT?,
+    likesWeight=31::INT?,
 
     batchSize=100::INT?)::(filename::STRING, time::INT, rows::INT, done::BOOLEAN)',
 'with "match (from:Account)

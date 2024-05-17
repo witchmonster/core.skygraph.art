@@ -92,16 +92,19 @@ call gds.graph.drop('undirected_filament', false);
 CALL gds.graph.project(
   'undirected_filament',
   'Account',
-{
-  FOLLOWS: {
-    orientation: 'UNDIRECTED' },
-  REPLIED: {
+// {
+//   FOLLOWS: {
+//     orientation: 'UNDIRECTED' },
+//   REPLIED: {
+//     orientation: 'UNDIRECTED',
+//     properties: {count: {aggregation:'SUM'}}},
+//   LIKED: {
+//     orientation: 'UNDIRECTED',
+//     properties: {count: {aggregation:'SUM'}}}
+// }
+  {WEIGHTED: {
     orientation: 'UNDIRECTED',
-    properties: {count: {aggregation:'SUM'}}},
-  LIKED: {
-    orientation: 'UNDIRECTED',
-    properties: {count: {aggregation:'SUM'}}}
-}
+    properties: {weight: {aggregation:'SUM'}}}}
 )
 YIELD graphName AS graph, nodeCount AS nodes, relationshipCount AS rels;
 
