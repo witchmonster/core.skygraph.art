@@ -243,7 +243,7 @@ create index communityConstellation IF NOT EXISTS for (n:Account) on (n.communit
 
 
 
-// ------------------------------ IMPORT HANDLES (few minutes) ------------------------------
+// ------------------------------ IMPORT HANDLES (up to 10-15 minutes) ------------------------------
 
 // Import handles to full
 :use fullv4
@@ -292,7 +292,7 @@ call {
     }
     with from, sum(perFriendWeight) as weight
     set from.weight = weight
-} in transactions of 100000 rows
+} in transactions
 return count(from);
 
 match (n:Account)
@@ -303,7 +303,7 @@ set n.weight = 0;
 
 
 
-// ------------------------------ IMPORT OPTOUTS ------------------------------
+// ------------------------------ IMPORT OPTOUTS (very fast) ------------------------------
 
 //Import optouts
 CALL apoc.load.csv('optout.csv') YIELD list
@@ -312,3 +312,17 @@ match (node:Account {did: item})
 set node.optOut = true;
 
 // ------------------------------ IMPORT OPTOUTS ------------------------------
+
+
+
+// ------------------------------ IMPORT BLOCKS (up to an hour) ------------------------------
+
+:auto load csv with headers from 'file:///blocks.csv' as row
+call {
+  with row
+  match (c:Account {did: row[":START_ID"]})
+  match (n:Account {did: row[":END_ID"]})
+  MERGE (c)-[:BLOCKS]->(n)
+} in transactions;
+
+// ------------------------------ IMPORT BLOCKS ----------------------------------------------

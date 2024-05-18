@@ -13,6 +13,7 @@ filesToBackup=(
     "like_counts.csv"
     "post_counts.csv"
     "optout.csv"
+    "blocks.csv"
     "timestamp.csv"
 )
 

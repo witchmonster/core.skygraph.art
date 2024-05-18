@@ -1,3 +1,29 @@
+//top moots ideas
+match (n:Account {handle:'skygraph.art'})<-[r:WEIGHTED]-(m:Account)
+with n, r, m
+match (n)-[rf:WEIGHTED]->(m)
+match (n)-[fnm:FOLLOWS]->(m)
+match (n)<-[fmn:FOLLOWS]-(m)
+optional match (n)-[bnm:BLOCKS]->(m)
+optional match (n)<-[bmn:BLOCKS]-(m)
+with *
+where type(bmn) is null
+and type(bnm) is null
+// and rf.weight > r.weight
+with *,
+rf.weight-r.weight as lovegap
+with * where lovegap < 100 and lovegap > -100
+with n, rf, m.community_constellation as friendConstellation, m.handle as handle, r.harmonicWeight as hw, rf.weight as fromWeight, r.weight as toWeight,
+type(fnm) as from, type(fmn) as to,
+type(bnm) as blocks, type(bmn) as isBlocked, lovegap
+order by rf.weight + lovegap desc limit 50
+with distinct friendConstellation, n
+match (com:Constellation {community:friendConstellation})
+match (n)-[w:WEIGHTED]->(l:Account {handle: com.leader})
+with com, w
+limit 50
+return com.name, com.size, w.weight order by w.weight desc;
+
 match (n:Gigacluster) return stDevP(n.size), percentileCont(n.size, 0.2), percentileCont(n.size, 0.5), percentileCont(n.size, 0.90),percentileCont(n.size, 0.99)
 
 // -------------------- STRONG --------------------
