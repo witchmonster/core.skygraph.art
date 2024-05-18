@@ -118,7 +118,7 @@ call {
 
 
 
-// ------------------------------ RE-IMPORT WITH WEIGHTS (fast) ------------------------------
+// ------------------------------ RE-IMPORT WITH WEIGHTS (up to half an hour) ------------------------------
 
 // bulk import is the fastest way to do this, don't try the LOAD CSV stuff, it will take forever
 
@@ -138,7 +138,7 @@ call {
 
 
 
-// ------------------------------ CREATE INDEXES (very fast) ------------------------------
+// ------------------------------ CREATE INDEXES (few minutes) ------------------------------
 
 //add indexes (same for both dbs)
 :use fullv4
