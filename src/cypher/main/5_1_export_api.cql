@@ -160,19 +160,17 @@ call {
         optional match (g:Galaxy {community: n.community_galaxy})
         optional match (e:Nebula {community: n.community_nebula})
         optional match (o:Constellation {community: n.community_constellation})
-        return collect({did: n.did,
-                        f: 'f' + coalesce(f.community),
-                        s: 's' + coalesce(s.community),
-                        c: 'c' + coalesce(c.community),
-                        g: 'g' + coalesce(g.community),
-                        e: 'e' + coalesce(e.community),
-                        o: 'o' + coalesce(o.community)
-        }) as nodes
+    return n.did as did,
+    'f' + coalesce(f.community) as f,
+    's' + coalesce(s.community) as s,
+    'c' + coalesce(c.community) as c,
+    'g' + coalesce(g.community) as g,
+    'e' + coalesce(e.community) as e,
+    'o' + coalesce(o.community) as o
 } in transactions
-return $graphVersion as graphVersion, 'did-to-communities' as type, nodes
+return did, f, s, c, g, e, o
 " as query
-call apoc.export.json.query(query, '/export/api/user/did_to_communities.json', {jsonFormat: 'JSON', params: {
-graphVersion:$graphVersion}} )
+call apoc.export.csv.query(query, '/export/api/user/did_to_communities.csv', {quotes:"ifNeeded"} )
 yield file, rows, time, done
 return file, rows, time, done;
 
