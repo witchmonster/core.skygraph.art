@@ -160,16 +160,16 @@ call {
         optional match (g:Galaxy {community: n.community_galaxy})
         optional match (e:Nebula {community: n.community_nebula})
         optional match (o:Constellation {community: n.community_constellation})
-    return $graphVersion as graphVersion, 'did-to-communities' as type, collect({did: n.did,
-    f: 'f' + coalesce(f.community),
-    s: 's' + coalesce(s.community),
-    c: 'c' + coalesce(c.community),
-    g: 'g' + coalesce(g.community),
-    e: 'e' + coalesce(e.community),
-    o: 'o' + coalesce(o.community)
-    }) as nodes
+        return collect({did: n.did,
+                        f: 'f' + coalesce(f.community),
+                        s: 's' + coalesce(s.community),
+                        c: 'c' + coalesce(c.community),
+                        g: 'g' + coalesce(g.community),
+                        e: 'e' + coalesce(e.community),
+                        o: 'o' + coalesce(o.community)
+        }) as nodes
 } in transactions
-return graphVersion, nodes
+return $graphVersion as graphVersion, 'did-to-communities' as type, nodes
 " as query
 call apoc.export.json.query(query, '/export/api/user/did_to_communities.json', {jsonFormat: 'JSON', params: {
 graphVersion:$graphVersion}} )
