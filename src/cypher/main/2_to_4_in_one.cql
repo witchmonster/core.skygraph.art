@@ -850,3 +850,9 @@ match (leader:Account)
 where n.leader = leader.handle
 set n.did = n.type + '_' + leader.did
 set n.name = n.type + '_' + leader.handle;
+
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
+with n
+match (leader:Account)
+where n.leader = leader.handle
+set n.leader_did = leader.did;
