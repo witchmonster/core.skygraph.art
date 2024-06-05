@@ -1,7 +1,7 @@
 // good news: this file can be copy-pasted and run in one go
 // ETA: 2-3 hours
 
-:param graphVersion => 4;
+:param graphVersion => 5;
 :param filamentGamma => 1;
 :param gigaclusterGamma => 1;
 :param superclusterGamma => 5;

@@ -1,5 +1,5 @@
 // leiden runs are non-deterministic, every run even on stable gamma will generate slightly different communities
-:param graphVersion => 4;
+:param graphVersion => 5;
 
 // FLR - follows, likes, replies
 

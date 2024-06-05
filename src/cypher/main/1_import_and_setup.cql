@@ -47,16 +47,16 @@
 
 // ------------------------------ BULK IMPORT CSVS (few minutes) ------------------------------
 
-cd $NEO4J_HOME
+cd $NEO4J_HOME/import
 
-// If using Neo4j Desktop, create dbs (`monthlyv4`, `fullv4`) through Neo4j Desktop UI first, before using neo4j-admin
+// If using Neo4j Desktop, create dbs (`monthlyv5`, `fullv5`) through Neo4j Desktop UI first, before using neo4j-admin
 // note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
 
 // Shutdown Neo4j and run full import:
-./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination fullv4
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --overwrite-destination fullv5
 
 //import monthly data into a separate db
-./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --overwrite-destination monthlyv4
+./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --overwrite-destination monthlyv5
 
 // ------------------------------ BULK IMPORT CSVS ------------------------------
 
@@ -67,8 +67,10 @@ cd $NEO4J_HOME
 // Start Neo4j DB
 
 // run all cypher queries for both dbs. switch between dbs:
-:use fullv4
-:use monthlyv4
+:use fullv5
+:use monthlyv5
+
+//--------------IMPORTANT!---------------- Make sure you turn off wsl and set neo4j.conf default listen address to 0.0.0.0 ------------------------------
 
 // create necessary indexes for aggregation
 CREATE CONSTRAINT account_unique IF NOT EXISTS
@@ -82,7 +84,7 @@ create index follows IF NOT EXISTS for (n:Account) on (n.follows);
 //apparently somehow empty dids are now possible (could be non-plc did?)
 match (n:Account)
 where n.did=''
-detach delete n
+detach delete n;
 
 // Count likes, posts, follows of each user (can take up to 15 min)
 :auto match (n:Account)
@@ -107,11 +109,11 @@ call {
 
 // Calculate harmonicWeights (up to 3 hours for full dataset)
 // update: with non-NVME SSD - can take up to a few days
-:use fullv4
+:use fullv5
 :auto call custom.calculateWeights('weights.csv') yield filename, rows, time;
 
-//same for monthlyv4
-:use monthlyv4
+//same for monthlyv5
+:use monthlyv5
 :auto call custom.calculateWeights('monthly/weights.csv') yield filename, rows, time;
 
 // ------------------------------ EXPORT WEIGHTS ------------------------------
@@ -126,11 +128,14 @@ call {
 // note: for Windows, replace `./bin/neo4j-admin` with `..\bin\neo4j-admin.bat `
 
 //in case if you need FOLLOWS LIKES and REPLIES as separate relationships, it will slow down the database significantly and will double it's size
-./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships FOLLOWS=import/follows.csv --relationships LIKED=import/like_counts.csv --relationships REPLIED=import/post_counts.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv5
 //otherwise it's recommended to run it with only weighted rels:
-./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv4
+./bin/neo4j-admin database import full --nodes Timestamp=import/timestamp.csv --nodes Account=import/dids.csv --relationships WEIGHTED=import/weights.csv --overwrite-destination fullv5
 
-./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination monthlyv4
+// same for monthly
+./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships FOLLOWS=import/monthly/follows.csv --relationships LIKED=import/monthly/like_counts.csv --relationships REPLIED=import/monthly/post_counts.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination fullv5
+//no likes/follows/replies, only weighted
+./bin/neo4j-admin database import full --nodes Timestamp=import/monthly/timestamp.csv --nodes Account=import/monthly/dids.csv --relationships WEIGHTED=import/monthly/weights.csv --overwrite-destination monthlyv5
 
 // And start Neo4j again
 
@@ -141,8 +146,8 @@ call {
 // ------------------------------ CREATE INDEXES (few minutes) ------------------------------
 
 //add indexes (same for both dbs)
-:use fullv4
-:use monthlyv4
+:use fullv5
+:use monthlyv5
 
 CREATE CONSTRAINT account_unique IF NOT EXISTS
 FOR (n:Account)
@@ -246,19 +251,23 @@ create index communityConstellation IF NOT EXISTS for (n:Account) on (n.communit
 // ------------------------------ IMPORT HANDLES (up to 10-15 minutes) ------------------------------
 
 // Import handles to full
-:use fullv4
+:use fullv5
 :auto load csv with headers from 'file:///handles.csv' as row
 call {
   with row
-  match (n:Account {did: row["did:ID"]}) set n.handle=row.handle
+  match (n:Account {did: row["did:ID"]})
+  where n.handle is null
+  set n.handle=row.handle
 } in transactions;
 
 // Import handles to monthly
-:use monthlyv4
+:use monthlyv5
 :auto load csv with headers from 'file:///monthly/handles.csv' as row
 call {
   with row
-  match (n:Account {did: row["did:ID"]}) set n.handle=row.handle
+  match (n:Account {did: row["did:ID"]})
+  where n.handle is null
+  set n.handle=row.handle
 } in transactions;
 
 // ------------------------------ IMPORT HANDLES ------------------------------
@@ -269,8 +278,8 @@ call {
 
 // Set weight to each node (can take up to an hour)
 // run below queries for both dbs
-:use fullv4
-:use monthlyv4
+:use fullv5
+:use monthlyv5
 
 :auto
 match (from:Account)
