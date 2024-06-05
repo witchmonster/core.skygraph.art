@@ -57,3 +57,6 @@ with n
 match (leader:Account)
 where n.leader = leader.handle
 set n.leader_did = leader.did;
+
+match (n:Constellation|Nebula|Galaxy|Cluster|Supercluster|Gigacluster|Filament)
+set n.version = 'v5';
