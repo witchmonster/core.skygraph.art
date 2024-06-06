@@ -60,13 +60,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_filament=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_filament=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
@@ -137,13 +137,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_gigacluster=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_gigacluster=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
@@ -212,13 +212,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_supercluster=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.handle as leader, n.community_filament as leaderParent
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_supercluster=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
@@ -293,13 +293,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_cluster=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.handle as leader, n.community_supercluster as leaderParent
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_cluster=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
@@ -374,13 +374,13 @@ where totalCount >= 0
 with *
 call { with community match (n:Account)
 where n.community_galaxy=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.community_cluster as leaderParent, n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_galaxy=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
@@ -453,13 +453,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_nebula=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.community_galaxy as leaderParent, n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_nebula=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
@@ -532,13 +532,13 @@ with
 with *
 call { with community match (n:Account)
 where n.community_constellation=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 return n.community_nebula as leaderParent, n.handle as leader
 order by n.weight desc
 limit 1}
 call { with community match (n:Account)
 where n.community_constellation=community
-and n.optOut is null
+and (n.optOut is null or n.optOut = false)
 with n
 order by n.weight desc
 limit 50
