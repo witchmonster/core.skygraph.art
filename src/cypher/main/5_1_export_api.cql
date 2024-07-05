@@ -1,4 +1,4 @@
-:param graphVersion => 5;
+:param graphVersion => 6;
 
 // ------------------------------- map.skygraph.art -------------------------------
 
