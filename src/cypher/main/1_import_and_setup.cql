@@ -80,9 +80,6 @@ cd $NEO4J_HOME/import
 //--------------IMPORTANT!----------------
 
 
-
-
-
 // create necessary indexes for aggregation
 CREATE CONSTRAINT account_unique IF NOT EXISTS
 FOR (n:Account)
@@ -109,6 +106,12 @@ call {
   n.likes = likes,
   n.replies = replies
 } in transactions;
+
+//--------------IMPORTANT!----------------
+
+// If it runs longer than a minute to update first 300k nodes - you have a networking issue described above!
+
+//--------------IMPORTANT!----------------
 
 // ------------------------------ AGGREGATE INTERACTIONS ------------------------------
 
