@@ -269,7 +269,7 @@ call {
 with nodes, from, from_did, to_did, weight where weight > 0
 with nodes, collect({source: from_did, target: to_did, weight: weight}) as rels
 return $graphVersion as graphVersion, nodes, rels" as query, community
-call apoc.export.json.query(query, 'export/sub_layouts/galaxies/graph_peacock_c'+ community +'.json', {jsonFormat: 'JSON', params: {
+call apoc.export.json.query(query, 'export/sub_layouts/galaxies/graph_peacock_g'+ community +'.json', {jsonFormat: 'JSON', params: {
     graphVersion:$graphVersion,
     minWeightGalaxies:$minWeightGalaxies,
     community:community}} )
@@ -336,7 +336,7 @@ call {
 with nodes, from, from_did, to_did, weight where weight > 0
 with nodes, collect({source: from_did, target: to_did, weight: weight}) as rels
 return $graphVersion as graphVersion, nodes, rels" as query, community
-call apoc.export.json.query(query, 'export/sub_layouts/nebulas/graph_peacock_c'+ community +'.json', {jsonFormat: 'JSON', params: {
+call apoc.export.json.query(query, 'export/sub_layouts/nebulas/graph_peacock_e'+ community +'.json', {jsonFormat: 'JSON', params: {
     graphVersion:$graphVersion,
     minWeightNebulas:$minWeightNebulas,
     community:community}} )
@@ -392,7 +392,7 @@ call {
 with nodes, from, from_did, to_did, weight where weight > 0
 with nodes, collect({source: from_did, target: to_did, weight: weight}) as rels
 return $graphVersion as graphVersion, nodes, rels" as query, community
-call apoc.export.json.query(query, 'export/sub_layouts/constellations/graph_peacock_c'+ community +'.json', {jsonFormat: 'JSON', params: {
+call apoc.export.json.query(query, 'export/sub_layouts/constellations/graph_peacock_o'+ community +'.json', {jsonFormat: 'JSON', params: {
     graphVersion:$graphVersion,
     minWeightConstellations:$minWeightConstellations,
     community:community}} )
