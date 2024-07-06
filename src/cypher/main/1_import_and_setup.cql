@@ -274,6 +274,11 @@ call {
   set n.handle=row.handle
 } in transactions;
 
+// to fix corrupted handles:
+// grep -v '\\\\\\' handles.csv > temp && mv temp handles.csv
+
+grep -v '\\\\\\' handles.csv > handles_fixed.csv
+
 // Import handles to monthly
 :use monthlyv6
 :auto load csv with headers from 'file:///monthly/handles.csv' as row
