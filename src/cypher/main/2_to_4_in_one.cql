@@ -1,5 +1,5 @@
 // good news: this file can be copy-pasted and run in one go
-// ETA: 2-3 hours
+// ETA: 5-6 hours
 
 :param graphVersion => 6;
 :param filamentGamma => 1;
