@@ -73,6 +73,7 @@ call {
         optional match (e:Nebula {community: n.community_nebula})
         optional match (o:Constellation {community: n.community_constellation})
     return n.did as did,
+    $graphVersion as version,
     'f' + coalesce(f.community) as f,
     's' + coalesce(s.community) as s,
     'c' + coalesce(c.community) as c,
@@ -80,9 +81,10 @@ call {
     'e' + coalesce(e.community) as e,
     'o' + coalesce(o.community) as o
 } in transactions
-return did, f, s, c, g, e, o
+return did, version, f, s, c, g, e, o
 " as query
-call apoc.export.csv.query(query, '/export/api/did_to_communities_v6.csv', {quotes:"ifNeeded"} )
+call apoc.export.csv.query(query, '/export/api/did_to_communities.csv', {quotes:"ifNeeded",params: {
+graphVersion:$graphVersion}} )
 yield file, rows, time, done
 return file, rows, time, done;
 
